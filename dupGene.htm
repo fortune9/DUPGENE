@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>dupGene.pl - A program to infer gene duplications and losses based
+solely on the number of paralogs in extant species. The program is
+designed for running on a large-scale analysis.</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+	<li><a href="#license">LICENSE</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#installation">INSTALLATION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#input">INPUT</a></li>
+	<li><a href="#output">OUTPUT</a></li>
+	<li><a href="#suggested_citation">Suggested Citation</a></li>
+	<li><a href="#reference">Reference</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>dupGene.pl - A program to infer gene duplications and losses based
+solely on the number of paralogs in extant species. The program is
+designed for running on a large-scale analysis.</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>This program is to infer the number of paralogs in all internal nodes
+and gene duplication/loss events along each branch in the species
+tree using Maximum Parsimony method.</p>
+<p>Briefly, given a species tree and the number of paralogs in extant
+species (leaf nodes in a species tree) in a gene family, one number is assigned to each
+internal node to represent the inferred number of paralogs at that
+node. After that, the number of duplications or losses on each branch can be
+calculated by subtracting the number of paralogs in the child node
+from the number in the parent node. Summing up all the duplications
+and losses on all branches gives the total number of
+duplications/losses (dubbed <strong>cost</strong>) for this set of assigned number
+of paralogs for internal nodes. Since there are more than one
+possible values as candidates for the number of paralogs in each internal 
+node and more combinations among different internal nodes, the 
+<em>Maximum Parsimony</em> method is trying to find the sets of inferred
+number of paralogs in internal nodes
+which give the minimal cost among all possible sets of values.</p>
+<p>To efficiently find the set of values giving the minimal cost, we
+implemented the dynamic progaming algorithm, which is introduced in 
+the paper <a href="#reference">Durand et al, 2005</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>&#169; 2012 by Zhenguo Zhang <a href="http://www.personal.psu.edu/zuz17/">http://www.personal.psu.edu/zuz17/</a> and the
+Pennsylvania State University <a href="http://www.psu.edu/">http://www.psu.edu/</a>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="license">LICENSE</a></h1>
+<p>GNU General Public License version 3 or later</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<pre>
+ Zhenguo Zhang
+ Institute of Molecular Evolutionary Genetics
+ Department of Biology
+ 311 Mueller Laboratory
+ The Pennsylvania State University
+ University Park, PA 16802 USA
+ Email: zuz17@psu.edu, fortunezzg@gmail.com</pre>
+<p>
+</p>
+<hr />
+<h1><a name="installation">INSTALLATION</a></h1>
+<p>The program is written in Perl, so it can execute in any platform
+(Linux/Unix, MacOS and Windows) where the Perl program is installed.
+If you have not installed perl, download and install it from
+<a href="http://www.perl.org/get.html">http://www.perl.org/get.html</a></p>
+<p>After the Perl is installed, do the following to install dupGene</p>
+<p>1. Download the latest version from Dr. Nei's website
+<a href="https://homes.bio.psu.edu/people/faculty/nei/software.htm">https://homes.bio.psu.edu/people/faculty/nei/software.htm</a></p>
+<p>2. Uncompress the files into a local directory, say ./mybin
+e.g., <em>tar -xzf dupGene.tar.gz</em>
+Now you should see dupGene.pl in ./mybin/</p>
+<p>3. Run the program 
+<em>perl ./mybin/dupGene.pl</em> to see more options.</p>
+<p>For more information, please see accompanying documents.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>perl dupGene.pl -s example.nwk -p example.in &gt;example.out</p>
+<p>run program without any arguments to see the usage information</p>
+<p>
+</p>
+<hr />
+<h1><a name="input">INPUT</a></h1>
+<p>The input needs two files, one is the species tree in newick format
+and the other is the number of paralogs for extant species (leaf nodes
+in the species tree) for each gene family (or homologous group).</p>
+<p>In the newick tree file, each node, including internal node, should
+have a unique id specified, because these ids are print out in output
+to represent nodes where duplicaions/losses happened. Example:
+</p>
+<pre>
+
+ ((((hum, mou)Tn3, cow)Tn5,chi)Tn7,(zeb,(tet,med)Fn3)Fn5)An;</pre>
+<p>Ids are case insensitive.</p>
+<p>The paralog-number file should be tab-delimited and
+provide the species names in the first line followed by the paralogous
+copies from the second line for each gene family. An example input
+file as follows containing three gene families:
+</p>
+<pre>
+
+ hum     mou     cow     chi     zeb     tet     med
+ 4       4       4       4       4       4       4
+ 2       2       1       1       3       2       2
+ 1       1       1       1       1       1       1</pre>
+<p>See <em>example.nwk</em> and <em>example.in</em> for data format.</p>
+<p>
+</p>
+<hr />
+<h1><a name="output">OUTPUT</a></h1>
+<p>The output is print to the standard output (ussually screen) but you
+can redirect it into a file by using '&gt; myoutput'.</p>
+<p>The output (tab-delimited) contains the inferred number of paralogs in
+internal nodes and the duplications and losses along branches. Since
+there may be more than one best equivalently parsimonious sets of
+values for internal nodes in a gene family, we output each of the inference with five lines
+, e.g., the following lines are shown the result for the 6th gene
+family in the example.in</p>
+<pre>
+ # 6.1
+ type    an      tn7     tn5     tn3     hum     mou     cow     chi   fn5     zeb     fn3     tet     med
+ copy    1       2       2       2       2       2       2       3      1       3       1       1       0 
+ dups    0       1       0       0       0       0       0       1      0       2       0       0       0
+ loss    0       0       0       0       0       0       0       0      0       0       0       0       1</pre>
+<p>The <strong>1</strong>st line starts with a '#' followed by a <em>num1.num2</em> string.
+<em>num1</em> represents the order of the gene families in input
+file. <em>num2</em> gives the order of parsimonious results for this given
+family. When there are more than one set of inferred number of paralogs
+in internal nodes, the <em>num2</em> increases, such as <em>6.1, 6.2</em> in
+example.out, both of which give the minimal total number of
+duplications and losses.</p>
+<p>The <strong>2</strong>nd line specify the data type in the following lines and
+species ids.</p>
+<p>The <strong>3</strong>rd to <strong>5</strong>th lines give the number of paralogous copies
+(<em>copy</em> line), of duplications (<em>dups</em> line) and of losses (<em>loss</em>
+line) occurred in each node. For duplications/losses, the numbers at a
+given node represent the number of events taking place on the branch
+from its parent node to itself.</p>
+<p>
+</p>
+<hr />
+<h1><a name="suggested_citation">Suggested Citation</a></h1>
+<p>Sayaka Miura*, Masafumi Nozawa*, Zhenguo Zhang, and Masatoshi Nei 
+<strong>Patterns of Duplication of MicroRNA Genes Support the Hypothesis of
+Genome Duplication in the Teleost Fish Lineage</strong>, (<em>submitted</em>)</p>
+<p>
+</p>
+<hr />
+<h1><a name="reference">Reference</a></h1>
+<p><strong>A Hybrid Micro-Macroevolutionary Approach to Gene Tree
+Reconstruction</strong>.
+D. Durand, B. V. Halldorsson, B. Vernot, 2005. Journal of Computational Biology, 13 (2): 320-335</p>
+
+</body>
+
+</html>
